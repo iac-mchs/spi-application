@@ -4,14 +4,16 @@ import 'package:fire_notifications_new/app/components/default_button.dart';
 import 'package:fire_notifications_new/app/components/ensure_focus.dart';
 import 'package:fire_notifications_new/app/components/input_field.dart';
 import 'package:fire_notifications_new/app/pages/authentication/authentication_controller.dart';
+import 'package:fire_notifications_new/app/pages/pages.dart';
 import 'package:fire_notifications_new/data/services/data_user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 class AuthenticationPage extends View {
   final String? title;
+  bool isAdding;
 
-  AuthenticationPage({required Key key, this.title}) : super(key: key);
+  AuthenticationPage({required Key key, this.title, this.isAdding = false}) : super(key: key);
 
   AuthenticationPageView createState() => AuthenticationPageView();
 }
@@ -86,6 +88,18 @@ class AuthenticationPageView
     },
   );
 
+  Widget get cancelButton => ControlledWidgetBuilder<AuthenticationController>(
+    builder: (context, controller) {
+      return Listener(
+        onPointerUp: (void event) {
+          if (controller.isLoading) return;
+          Navigator.of(context).pushNamed(Pages.notificationScreen);
+        },
+        child: DefaultButton('Отмена', isDisabled: controller.isLoading, defaultColor: Colors.redAccent,),
+      );
+    },
+  );
+
   EdgeInsets get padding {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       return EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.3, right: MediaQuery.of(context).size.width * 0.3);
@@ -118,7 +132,16 @@ class AuthenticationPageView
                         passwordInput,
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 10.0),
-                          child: loginButton,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              loginButton,
+                              if (this.widget.isAdding) ... {
+                                Padding(padding: EdgeInsets.only(left: 10.0),),
+                                cancelButton
+                              }
+                            ],
+                          ),
                         ),
                       ],
                     ),

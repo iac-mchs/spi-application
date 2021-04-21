@@ -18,7 +18,6 @@ class GetObjectsUseCase extends UseCase<List<ObjectItem>, void> {
       controller.add(objs);
       controller.close();
     } catch (e, stacktrace) {
-      log(stacktrace.toString());
       controller.addError(e);
     }
 

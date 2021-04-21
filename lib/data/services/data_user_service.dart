@@ -25,9 +25,9 @@ class DataUserService implements UserService {
 
     List<String>? existing = preferences.getStringList('accounts');
     if (existing == null) {
-      existing = ['$url@@$encoded'];
+      existing = ['$url@@$encoded@@$username'];
     } else {
-      existing.add('$url@@$encoded');
+      existing.add('$url@@$encoded@@$username');
     }
 
     preferences.setStringList('accounts', existing);
@@ -36,7 +36,6 @@ class DataUserService implements UserService {
       await WSDLHelper(endpoint: url, token: encoded).post(new ObjectsRequestDto().toXml(), 'GetObjects');
       preferences.setBool('isAuth', true);
     } catch (e, stacktrace) {
-      log(stacktrace.toString());
       throw e;
     }
   }
@@ -50,15 +49,26 @@ class DataUserService implements UserService {
     List<AccountDto> result = [];
     for (final acc in accounts) {
       dynamic arr = acc.split('@@');
-      result.add(new AccountDto(url: arr[0], token: arr[1]));
+      result.add(new AccountDto(url: arr[0], token: arr[1], name: arr[2] ?? null));
     }
 
     return result;
   }
 
+  static Future<List<AccountDto>> removeAccount(AccountDto account) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<AccountDto> accounts = await DataUserService.getAccounts();
+    accounts.removeWhere((element) => element.token == account.token);
+
+    await preferences.setStringList('accounts', accounts.map((e) => '${e.url}@@${e.token}@@${e.name}').toList());
+
+    List<AccountDto> newAccountsList = await DataUserService.getAccounts();
+    return newAccountsList;
+  }
+
   @override
   Future<bool> isAuthenticated() async {
-    final SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getBool('isAuth') ?? false;
+    List<dynamic> accs = await DataUserService.getAccounts();
+    return accs.isNotEmpty;
   }
 }

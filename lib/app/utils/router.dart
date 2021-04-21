@@ -10,7 +10,8 @@ class AppRouter {
   Route<dynamic>? getRoute(RouteSettings settings) {
     switch (settings.name) {
       case Pages.authentication:
-        return _buildRoute(settings, AuthenticationPage(key: Key('authentication')));
+        Map<dynamic, dynamic> args = settings.arguments != null ? settings.arguments as Map : {};
+        return _buildRoute(settings, AuthenticationPage(key: Key('authentication'), isAdding: args['isAdding'] ?? false,));
       case Pages.notificationScreen:
         return _buildRoute(settings, MainPage(key: Key('main')));
       case Pages.detailPage:

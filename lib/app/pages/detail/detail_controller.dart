@@ -24,7 +24,6 @@ class DetailController extends Controller {
     _detailPresenter.ackOnComplete = this.ackOnComplete;
 
     _detailPresenter.ackOnError = (e) {
-      log(e.toString());
     };
 
     pageController.addListener(() {

@@ -18,7 +18,6 @@ class AuthenticateUseCase extends CompletableUseCase<AuthenticateUseCaseParams> 
       await _userService.authenticate(url: params!._url, username: params._username, password: params._password);
       controller.close();
     } catch (e, stacktrace) {
-      log(stacktrace.toString());
       controller.addError(e);
     }
 

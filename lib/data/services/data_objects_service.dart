@@ -40,6 +40,7 @@ class DataObjectsService implements ObjectsService {
           }
 
           finalList.addAll(objList);
+          print(account);
         } catch (e) {
           throw e;
         }
