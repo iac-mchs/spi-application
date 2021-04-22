@@ -37,26 +37,24 @@ class AuthenticationController extends Controller {
   void _loginOnError(e) {
     dismissLoading();
 
-    ScaffoldMessenger.of(getContext()).showSnackBar(
-        SnackBar(
-          padding: EdgeInsets.only(left: 50.0, right: 50.0),
-          backgroundColor: Colors.red,
-          content: Text(
-            e.toString(),
-            style: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.w500, fontSize: 17.0),
-          ),
-        )
-    );
+    ScaffoldMessenger.of(getContext()).showSnackBar(SnackBar(
+      padding: EdgeInsets.only(left: 50.0, right: 50.0),
+      backgroundColor: Colors.red,
+      content: Text(
+        e.toString(),
+        style: TextStyle(
+            fontFamily: 'Roboto', fontWeight: FontWeight.w500, fontSize: 17.0),
+      ),
+    ));
   }
 
   void login() async {
     isLoading = true;
     refreshUI();
     _authenticationPresenter.login(
-      url: urlTextController.text,
-      username: usernameTextController.text,
-      password: passwordTextController.text
-    );
+        url: urlTextController.text,
+        username: usernameTextController.text,
+        password: passwordTextController.text);
   }
 
   void dismissLoading() {
