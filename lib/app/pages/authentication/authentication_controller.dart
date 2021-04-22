@@ -19,7 +19,7 @@ class AuthenticationController extends Controller {
     usernameTextController = TextEditingController();
     passwordTextController = TextEditingController();
     urlTextController = TextEditingController();
-    urlTextController.text = 'http://192.168.18.145:8588/FireNotificationWS/services/fireNotification';
+    // urlTextController.text = 'http://192.168.18.145:8588/FireNotificationWS/services/fireNotification';
     initListeners();
   }
 

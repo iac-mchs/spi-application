@@ -1,0 +1,3 @@
+class PlaySoundEvent {
+  PlaySoundEvent();
+}
