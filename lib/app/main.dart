@@ -34,12 +34,13 @@ void main() async {
     );
 
     window_size.setWindowFrame(frame);
+    window_size.setWindowTitle('SPI EMERCOM');
 
     // await DesktopWindow.setWindowSize(window.screen!.frame.size);
     // await DesktopWindow.setMaxWindowSize(window.screen!.frame.size);
     // await DesktopWindow.setMinWindowSize(window.screen!.frame.size);
 
-    await DesktopWindow.toggleFullScreen();
+    // await DesktopWindow.toggleFullScreen();
   }
 
   // eventbus listeners
