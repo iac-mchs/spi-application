@@ -4,6 +4,7 @@ import 'package:fire_notifications_new/app/components/map_view.dart';
 import 'package:fire_notifications_new/app/components/tab_button_widget.dart';
 import 'package:fire_notifications_new/app/pages/detail/detail_controller.dart';
 import 'package:fire_notifications_new/app/pages/detail/utils/info_tab_page.dart';
+import 'package:fire_notifications_new/app/pages/detail/utils/sensors_tab_page.dart';
 import 'package:fire_notifications_new/app/pages/detail/utils/top_side_container.dart';
 import 'package:fire_notifications_new/data/dtos/account_dto.dart';
 import 'package:fire_notifications_new/data/services/data_objects_service.dart';
@@ -31,6 +32,7 @@ class DetailPageView extends ResponsiveViewState<DetailPage, DetailController> {
         builder: (context, controller) {
           return Expanded(
             child: Container(
+              height: MediaQuery.of(context).size.height,
               color: Colors.white,
               child: PageView(
                 physics: NeverScrollableScrollPhysics(),
@@ -38,7 +40,13 @@ class DetailPageView extends ResponsiveViewState<DetailPage, DetailController> {
                 controller: controller.pageController,
                 children: <Widget>[
                   InfoTabPage(notification: this.widget.notification),
-                  sensorsPage,
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(child: SensorsTabPage(notification: this.widget.notification))
+                    ],
+                  ),
                 ],
               ),
             ),

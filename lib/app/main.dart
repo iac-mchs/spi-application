@@ -4,12 +4,14 @@ import 'package:fire_notifications_new/app/utils/router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:window_size/window_size.dart' as window_size;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initializeDateFormatting();
   SharedPreferences preferences = await SharedPreferences.getInstance();
 
   /// clean store every time if app in a debug mode

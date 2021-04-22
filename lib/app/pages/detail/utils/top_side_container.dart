@@ -14,6 +14,7 @@ class TopSideContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Flexible(
+      flex: 0,
       child: Container(
         decoration: new BoxDecoration(
           gradient: new LinearGradient(

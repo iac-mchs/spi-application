@@ -23,11 +23,19 @@ class DataUserService implements UserService {
     var bytes = utf8.encode(sourceString);
     var encoded = base64.encode(bytes);
 
+    String accountStr = '$url@@$encoded@@$username';
+
     List<String>? existing = preferences.getStringList('accounts');
+
     if (existing == null) {
-      existing = ['$url@@$encoded@@$username'];
+      existing = [accountStr];
     } else {
-      existing.add('$url@@$encoded@@$username');
+      dynamic accountIsExists = existing.contains(accountStr);
+      if (accountIsExists) {
+        throw new Exception('Данный источник был подключен ранее');
+      }
+
+      existing.add(accountStr);
     }
 
     preferences.setStringList('accounts', existing);
