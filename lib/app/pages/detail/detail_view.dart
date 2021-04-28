@@ -54,42 +54,44 @@ class DetailPageView extends ResponsiveViewState<DetailPage, DetailController> {
         },
       );
 
-  @override
-  // TODO: implement desktopView
-  Widget get desktopView => Container(
-        key: globalKey,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
+  Widget get container => Container(
+    key: globalKey,
+    width: MediaQuery.of(context).size.width,
+    height: MediaQuery.of(context).size.height,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Column(
           children: [
-            Column(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.75,
-                  height: MediaQuery.of(context).size.height,
-                  child: MapView(this.widget.notification),
-                ),
-              ],
-            ),
-            Expanded(
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                color: Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TopSideContainer(this.widget.notification),
-                    pagesContainer,
-                  ],
-                ),
-              ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.75,
+              height: MediaQuery.of(context).size.height,
+              child: MapView(this.widget.notification),
             ),
           ],
         ),
-      );
+        Expanded(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TopSideContainer(this.widget.notification),
+                pagesContainer,
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  @override
+  // TODO: implement desktopView
+  Widget get desktopView => container;
 
   @override
   // TODO: implement mobileView
@@ -97,7 +99,7 @@ class DetailPageView extends ResponsiveViewState<DetailPage, DetailController> {
 
   @override
   // TODO: implement tabletView
-  Widget get tabletView => throw UnimplementedError();
+  Widget get tabletView => container;
 
   @override
   // TODO: implement watchView

@@ -62,7 +62,9 @@ class MainPresenter extends Presenter {
     getObjectsUseCase.dispose();
     getAccountsUseCase.dispose();
 
-    notificationTimer.cancel();
+    if (notificationTimer.isActive) {
+      notificationTimer.cancel();
+    }
   }
 
   void getObjects() => getObjectsUseCase.execute(_GetObjectsObserver(this));

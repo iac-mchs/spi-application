@@ -24,28 +24,35 @@ class WSDLHelper {
         : '';
     headers['Authorization'] = "Basic $token";
 
-    final response = await http.post(
-      Uri.parse(endpoint),
-      headers: headers,
-      body: requestBody,
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(endpoint),
+        headers: headers,
+        body: requestBody,
+      );
 
-    if ([401, 403].contains(response.statusCode)) {
-      throw new Exception('Неверные данные для входа.');
+      if ([401, 403].contains(response.statusCode)) {
+        throw new Exception('Неверные данные для входа.');
+      }
+
+      if ([500].contains(response.statusCode)) {
+        throw new Exception('Ошибка сервера.');
+      }
+
+      if ([404].contains(response.statusCode)) {
+        throw new Exception('Сервис или метод не найдены (404)');
+      }
+
+      String responseBody = response.body;
+
+      XmlDocument document = XmlDocument.parse(responseBody);
+      return document;
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
     }
 
-    if ([500].contains(response.statusCode)) {
-      throw new Exception('Ошибка сервера.');
-    }
-
-    if ([404].contains(response.statusCode)) {
-      throw new Exception('Сервис или метод не найдены (404)');
-    }
-
-    String responseBody = response.body;
-
-    XmlDocument document = XmlDocument.parse(responseBody);
-    return document;
+    return new XmlDocument();
   }
 
   static XmlNode _soapEnvelope(Object body) {
