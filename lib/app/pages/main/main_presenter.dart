@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:fire_notifications_new/app/globals.dart';
 import 'package:fire_notifications_new/data/dtos/account_dto.dart';
 import 'package:fire_notifications_new/domain/entities/object_item.dart';
 import 'package:fire_notifications_new/domain/entities/sensor_state_item.dart';
 import 'package:fire_notifications_new/domain/entities/state_item.dart';
+import 'package:fire_notifications_new/domain/events/network_status_event.dart';
 import 'package:fire_notifications_new/domain/services/objects_service.dart';
 import 'package:fire_notifications_new/domain/services/user_service.dart';
 import 'package:fire_notifications_new/domain/usecases/get_accounts_use_case.dart';
@@ -37,7 +39,7 @@ class MainPresenter extends Presenter {
 
   late ObjectsService _objectsService;
 
-  late Timer notificationTimer;
+  Timer? notificationTimer;
 
   MainPresenter(UserService userService, ObjectsService objectsService)
       : notificationsUseCase = NotificationsUseCase(objectsService),
@@ -62,8 +64,8 @@ class MainPresenter extends Presenter {
     getObjectsUseCase.dispose();
     getAccountsUseCase.dispose();
 
-    if (notificationTimer.isActive) {
-      notificationTimer.cancel();
+    if (notificationTimer != null && notificationTimer!.isActive) {
+      notificationTimer!.cancel();
     }
   }
 
@@ -72,7 +74,11 @@ class MainPresenter extends Presenter {
   void removeAccount(AccountDto account) => removeAccountUseCase.execute(
       _RemoveAccountObserver(this), RemoveAccountUseCaseParams(account));
 
-  void disableTimer() => notificationTimer.cancel();
+  void disableTimer() {
+    if (notificationTimer != null) {
+      notificationTimer!.cancel();
+    }
+  }
 }
 
 class _NotificationsUseCaseObserver implements Observer<List<SensorStateItem>> {
@@ -81,7 +87,7 @@ class _NotificationsUseCaseObserver implements Observer<List<SensorStateItem>> {
 
   @override
   void onComplete() {
-    _presenter.getObjectsOnComplete();
+    _presenter.getNotificationsOnComplete();
   }
 
   @override

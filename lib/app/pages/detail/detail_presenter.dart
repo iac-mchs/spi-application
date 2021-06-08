@@ -1,4 +1,7 @@
+import 'package:event_bus/event_bus.dart';
+import 'package:fire_notifications_new/app/globals.dart';
 import 'package:fire_notifications_new/data/dtos/account_dto.dart';
+import 'package:fire_notifications_new/domain/events/stop_sound_event.dart';
 import 'package:fire_notifications_new/domain/services/objects_service.dart';
 import 'package:fire_notifications_new/domain/usecases/send_ack_usecase.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,6 +38,7 @@ class _SendAckUseCaseObserver extends Observer<void> {
   @override
   void onComplete() {
     _detailPresenter.ackOnComplete();
+    eventBus.fire(StopSoundEvent());
   }
 
   @override

@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:fire_notifications_new/app/components/notification_item.dart';
 import 'package:fire_notifications_new/app/pages/main/main_controller.dart';
 import 'package:fire_notifications_new/app/pages/pages.dart';
+import 'package:fire_notifications_new/app/globals.dart';
 import 'package:fire_notifications_new/data/dtos/account_dto.dart';
 import 'package:fire_notifications_new/data/services/data_objects_service.dart';
 import 'package:fire_notifications_new/data/services/data_user_service.dart';
@@ -32,37 +33,41 @@ class MainPageView extends ViewState<MainPage, MainController> {
         child: Image.asset('assets/img/bg.png', fit: BoxFit.cover),
       );
 
-  Widget get networkStatus => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 12.0, right: 12.0),
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                  style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Roboto',
-                      color: Colors.green,
-                      textBaseline: TextBaseline.ideographic),
-                  children: [
-                    WidgetSpan(
-                        child: Icon(
-                          Icons.network_check_sharp,
-                          color: Colors.green,
-                        ),
-                        alignment: PlaceholderAlignment.middle),
-                    WidgetSpan(
-                        child: Padding(
-                      padding: EdgeInsets.only(right: 10.0),
-                    )),
-                    TextSpan(text: 'Подключение активно'),
-                  ]),
-            ),
-          )
-        ],
-      );
+  Widget get networkStatusWidget => ControlledWidgetBuilder<MainController>(
+      builder: (context, controller) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 12.0, right: 12.0),
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                    style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Roboto',
+                        color: controller.networkIsAvailable ? Colors.green : Colors.red,
+                        textBaseline: TextBaseline.ideographic),
+                    children: [
+                      WidgetSpan(
+                          child: Icon(
+                            Icons.network_check_sharp,
+                            color: controller.networkIsAvailable ? Colors.green : Colors.red,
+                          ),
+                          alignment: PlaceholderAlignment.middle),
+                      WidgetSpan(
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 10.0),
+                          )),
+                      TextSpan(text: controller.networkIsAvailable ? 'Подключение активно' : 'Подключение не активно'),
+                    ]),
+              ),
+            )
+          ],
+        );
+      }
+  );
 
   Widget accountsList(BuildContext context, MainController controller) {
     return Scrollbar(
@@ -223,7 +228,7 @@ class MainPageView extends ViewState<MainPage, MainController> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              networkStatus,
+              networkStatusWidget,
               rightMenu,
             ],
           ),

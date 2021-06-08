@@ -1,13 +1,28 @@
 import 'dart:io';
+import 'package:fire_notifications_new/domain/events/network_status_event.dart';
+
+import 'globals.dart' as globals;
+import 'package:event_bus/event_bus.dart';
 import 'package:fire_notifications_new/app/pages/splash/splash_view.dart';
+import 'package:fire_notifications_new/app/utils/audio.dart';
 import 'package:fire_notifications_new/app/utils/router.dart';
+import 'package:fire_notifications_new/domain/events/play_sound_event.dart';
+import 'package:fire_notifications_new/domain/events/stop_sound_event.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:window_size/window_size.dart' as window_size;
+
+class PlayedSensor {
+  int id;
+  int ts;
+
+  PlayedSensor({required this.id, required this.ts});
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,9 +58,29 @@ void main() async {
     // await DesktopWindow.toggleFullScreen();
   }
 
+  // audio player controlling
+  AudioController _audioController = new AudioController();
+  List<PlayedSensor?> playedList = [];
+
   // eventbus listeners
 
+  globals.eventBus.on<PlaySoundEvent>().listen((event) {
+    PlayedSensor? isPlayed = playedList.firstWhere(
+        (element) => element!.id == event.id && element.ts == event.id,
+        orElse: () => null);
+    if (isPlayed != null) return;
 
+    playedList.add(new PlayedSensor(id: event.id, ts: event.ts));
+    _audioController.play();
+  });
+
+  globals.eventBus.on<StopSoundEvent>().listen((event) {
+    _audioController.stop();
+  });
+
+  globals.eventBus.on<NetworkStatusEvent>().listen((event) {
+    globals.networkStatus = event.status;
+  });
 
   runApp(MyApp());
 }
@@ -66,9 +101,8 @@ class MyApp extends StatelessWidget {
               title: "Система пожарного информирования",
               theme: ThemeData(
                 visualDensity: VisualDensity.adaptivePlatformDensity,
-                textTheme: GoogleFonts.robotoTextTheme(
-                    Theme.of(context).textTheme
-                ),
+                textTheme:
+                    GoogleFonts.robotoTextTheme(Theme.of(context).textTheme),
                 fontFamily: 'Roboto',
               ),
               home: SplashPage(),

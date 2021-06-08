@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:fire_notifications_new/app/globals.dart';
 import 'package:fire_notifications_new/app/pages/main/main_presenter.dart';
 import 'package:fire_notifications_new/app/pages/pages.dart';
 import 'package:fire_notifications_new/data/dtos/account_dto.dart';
@@ -7,6 +8,7 @@ import 'package:fire_notifications_new/data/services/data_user_service.dart';
 import 'package:fire_notifications_new/domain/entities/notification.dart';
 import 'package:fire_notifications_new/domain/entities/object_item.dart';
 import 'package:fire_notifications_new/domain/entities/sensor_state_item.dart';
+import 'package:fire_notifications_new/domain/events/play_sound_event.dart';
 import 'package:fire_notifications_new/domain/services/objects_service.dart';
 import 'package:fire_notifications_new/domain/services/user_service.dart';
 import 'package:flutter/material.dart' hide Notification;
@@ -14,6 +16,7 @@ import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
 class MainController extends Controller {
   late UserService? _userService;
+
   MainPresenter _mainPresenter;
   List<ObjectItem> objects = [];
   List<SensorStateItem> sensors = [];
@@ -51,9 +54,11 @@ class MainController extends Controller {
 
       for (final critical in criticalStates) {
         try {
-          dynamic object =
+          ObjectItem? object =
               objects.firstWhere((element) => element.id == critical.objId);
+
           notifyList.add(new Notification(object, critical, critical.account));
+          eventBus.fire(PlaySoundEvent(object.id!, critical.lastStatus!.ts));
         } catch (e) {
           throw e;
         }
@@ -64,6 +69,9 @@ class MainController extends Controller {
     };
 
     _mainPresenter.getNotificationsOnComplete = () {
+      networkIsAvailable = networkStatus;
+      log('networkst1 - $networkIsAvailable');
+      log('networkst2globals - $networkStatus');
       refreshUI();
     };
 
@@ -117,7 +125,6 @@ class MainController extends Controller {
   // remove acc
 
   void removeAccountOnComplete() {
-    this.stopTimer();
 
     if (accounts.length == 0) {
       Navigator.of(getContext()).pushNamed(Pages.authentication);

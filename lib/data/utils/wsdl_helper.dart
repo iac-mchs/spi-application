@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:fire_notifications_new/app/globals.dart';
+import 'package:fire_notifications_new/domain/events/network_status_event.dart';
 import 'package:xml/xml.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,6 +38,7 @@ class WSDLHelper {
       }
 
       if ([500].contains(response.statusCode)) {
+        eventBus.fire(NetworkStatusEvent(false));
         throw new Exception('Ошибка сервера.');
       }
 
@@ -46,8 +49,12 @@ class WSDLHelper {
       String responseBody = response.body;
 
       XmlDocument document = XmlDocument.parse(responseBody);
+
+      eventBus.fire(NetworkStatusEvent(true));
+
       return document;
     } catch (e, stacktrace) {
+      eventBus.fire(NetworkStatusEvent(false));
       print(e);
       print(stacktrace);
     }
