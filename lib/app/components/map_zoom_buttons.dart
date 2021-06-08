@@ -73,7 +73,7 @@ class ZoomButtons extends StatelessWidget {
               zoomButtonsOpts.zoomInColor ?? Theme.of(context).primaryColor,
               onPressed: () {
                 var bounds = map.getBounds();
-                var centerZoom = map.getBoundsCenterZoom(bounds!, options);
+                var centerZoom = map.getBoundsCenterZoom(bounds, options);
                 var zoom = centerZoom.zoom + 1;
                 if (zoom < zoomButtonsOpts.minZoom) {
                   zoom = zoomButtonsOpts.minZoom as double;
@@ -93,7 +93,7 @@ class ZoomButtons extends StatelessWidget {
                   Theme.of(context).primaryColor,
               onPressed: () {
                 var bounds = map.getBounds();
-                var centerZoom = map.getBoundsCenterZoom(bounds!, options);
+                var centerZoom = map.getBoundsCenterZoom(bounds, options);
                 var zoom = centerZoom.zoom - 1;
                 if (zoom > zoomButtonsOpts.maxZoom) {
                   zoom = zoomButtonsOpts.maxZoom as double;
