@@ -43,6 +43,7 @@ dependencies:
   popover: ^0.2.1
   event_bus: ^2.0.0
   just_audio: any
+  audioplayers: any
   window_size:
     git:
       url: git://github.com/google/flutter-desktop-embedding.git

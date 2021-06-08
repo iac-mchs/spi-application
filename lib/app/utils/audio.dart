@@ -1,22 +1,22 @@
-import 'package:just_audio/just_audio.dart';
+
+import 'package:audioplayers/audioplayers.dart';
 
 class AudioController {
-  late AudioPlayer _player;
+  late AudioCache _player;
+  late AudioPlayer _instance;
+  bool isPlaying = false;
 
-  AudioController() : _player = new AudioPlayer() {
-    _player.setAsset('assets/audio/03265.mp3');
-    _player.setLoopMode(LoopMode.all);
-  }
+  AudioController() : _player = new AudioCache(prefix: 'assets/audio/');
 
-  PlayerState get currentState => _player.playerState;
-
-  play() {
-    if (this.currentState.playing) return;
-    _player.play();
+  play() async {
+    if (isPlaying) return;
+    _instance = await _player.loop('03265.mp3');
+    isPlaying = true;
   }
 
   stop() {
-    if (this.currentState.playing == false) return;
-    _player.stop();
+    if (!isPlaying) return;
+    _instance.stop();
+    isPlaying = false;
   }
 }

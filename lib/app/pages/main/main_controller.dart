@@ -70,8 +70,6 @@ class MainController extends Controller {
 
     _mainPresenter.getNotificationsOnComplete = () {
       networkIsAvailable = networkStatus;
-      log('networkst1 - $networkIsAvailable');
-      log('networkst2globals - $networkStatus');
       refreshUI();
     };
 
