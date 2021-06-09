@@ -16,7 +16,7 @@ class AudioController {
 
     Media media = await Media.asset('assets/audio/03265.mp3');
     _player.open(
-      new Playlist(medias: [media], playlistMode: PlaylistMode.loop),
+      new Playlist(medias: [media], playlistMode: PlaylistMode.repeat),
       autoStart: false,
     );
 
