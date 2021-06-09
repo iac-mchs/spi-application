@@ -16,8 +16,8 @@ class AudioController {
 
     Media media = await Media.asset('assets/audio/03265.mp3');
     _player.open(
-      new Playlist(medias: [media], playlistMode: PlaylistMode.repeat),
-      autoStart: false,
+      new Playlist(medias: [media], playlistMode: PlaylistMode.loop),
+      autoStart: true,
     );
 
     _player.play();
@@ -29,6 +29,7 @@ class AudioController {
 
     if (!isPlaying) return;
     _player.stop();
+    _player.dispose();
     isPlaying = false;
   }
 }
