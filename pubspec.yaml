@@ -42,7 +42,7 @@ dependencies:
   flutter_map: any
   popover: ^0.2.1
   event_bus: ^2.0.0
-  flutter_audio_desktop: any
+  dart_vlc: any
   window_size:
     git:
       url: git://github.com/google/flutter-desktop-embedding.git

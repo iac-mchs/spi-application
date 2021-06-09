@@ -1,32 +1,34 @@
 
 import 'dart:io';
 
-import 'package:flutter_audio_desktop/flutter_audio_desktop.dart';
-
+import 'package:dart_vlc/dart_vlc.dart';
 
 class AudioController {
-  late AudioPlayer _player;
-  late AudioPlayer _instance;
+  late Player _player;
   bool isPlaying = false;
 
-  AudioController() : _player = new AudioPlayer(id: 1);
+  AudioController() : _player = new Player(id: 1);
 
   play() async {
     if (Platform.isMacOS) return;
 
-    if (_player.audio.isPlaying) return;
+    if (isPlaying) return;
 
-    _player.load(
-      await AudioSource.fromAsset('assets/audio/03265.mp3'),
+    Media media = await Media.asset('assets/audio/03265.mp3');
+    _player.open(
+      new Playlist(medias: [media], playlistMode: PlaylistMode.loop),
+      autoStart: false,
     );
 
     _player.play();
+    isPlaying = true;
   }
 
   stop() {
     if (Platform.isMacOS) return;
 
-    if (!_player.audio.isPlaying) return;
+    if (!isPlaying) return;
     _player.stop();
+    isPlaying = false;
   }
 }
