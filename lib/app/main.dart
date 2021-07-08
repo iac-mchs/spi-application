@@ -16,13 +16,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:window_size/window_size.dart' as window_size;
 
-class PlayedSensor {
-  int id;
-  int ts;
-
-  PlayedSensor({required this.id, required this.ts});
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initializeDateFormatting();
@@ -59,17 +52,16 @@ void main() async {
 
   // audio player controlling
   AudioController _audioController = new AudioController();
-  List<PlayedSensor?> playedList = [];
 
   // eventbus listeners
 
   globals.eventBus.on<PlaySoundEvent>().listen((event) {
-    PlayedSensor? isPlayed = playedList.firstWhere(
-        (element) => element!.id == event.id && element.ts == event.id,
+    globals.PlayedSensor? isPlayed = globals.playedList.firstWhere(
+        (element) => element!.id == event.id && element.ts == event.ts,
         orElse: () => null);
     if (isPlayed != null) return;
 
-    playedList.add(new PlayedSensor(id: event.id, ts: event.ts));
+    globals.playedList.add(new globals.PlayedSensor(id: event.id, ts: event.ts));
     _audioController.play();
   });
 

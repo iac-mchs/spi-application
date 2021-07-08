@@ -46,6 +46,9 @@ class MainController extends Controller {
     _mainPresenter.getNotificationsOnNext = (List<SensorStateItem> list) {
       sensors = list;
 
+      final playedItems = playedList.map((e) => e!.id);
+      list.retainWhere((element) => !playedItems.contains(element.id));
+
       List<SensorStateItem> criticalStates = list
           .where((element) => [2, 4, 5].contains(element.lastStatus?.code))
           .toList();
@@ -93,7 +96,8 @@ class MainController extends Controller {
   }
 
   void stopTimer() => _mainPresenter.disableTimer();
-  void removeAccount(AccountDto account) => _mainPresenter.removeAccount(account);
+  void removeAccount(AccountDto account) =>
+      _mainPresenter.removeAccount(account);
 
   Future<int> accountsCount() async {
     dynamic acc = await DataUserService.getAccounts();
@@ -123,7 +127,6 @@ class MainController extends Controller {
   // remove acc
 
   void removeAccountOnComplete() {
-
     if (accounts.length == 0) {
       Navigator.of(getContext()).pushNamed(Pages.authentication);
       return;

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:fire_notifications_new/app/globals.dart';
@@ -40,6 +41,8 @@ class MainPresenter extends Presenter {
   late ObjectsService _objectsService;
 
   Timer? notificationTimer;
+  Timer? playedItemsClearTimer;
+  Timer? objectsUpdateTimer;
 
   MainPresenter(UserService userService, ObjectsService objectsService)
       : notificationsUseCase = NotificationsUseCase(objectsService),
@@ -54,8 +57,26 @@ class MainPresenter extends Presenter {
       notificationsUseCase.execute(_NotificationsUseCaseObserver(this),
           NotificationsUseCaseParams(objects));
     });
+    playedItemsClearTimer = Timer.periodic(new Duration(minutes: 10), (timer) {
+      playedList.clear();
+    });
+
     notificationsUseCase.execute(_NotificationsUseCaseObserver(this),
         NotificationsUseCaseParams(objects));
+  }
+
+  void disableTimer() {
+    if (notificationTimer != null && notificationTimer!.isActive) {
+      notificationTimer!.cancel();
+    }
+
+    if (playedItemsClearTimer != null && playedItemsClearTimer!.isActive) {
+      playedItemsClearTimer!.cancel();
+    }
+
+    if (objectsUpdateTimer != null && objectsUpdateTimer!.isActive) {
+      objectsUpdateTimer!.cancel();
+    }
   }
 
   @override
@@ -64,21 +85,22 @@ class MainPresenter extends Presenter {
     getObjectsUseCase.dispose();
     getAccountsUseCase.dispose();
 
-    if (notificationTimer != null && notificationTimer!.isActive) {
-      notificationTimer!.cancel();
-    }
+    disableTimer();
   }
 
-  void getObjects() => getObjectsUseCase.execute(_GetObjectsObserver(this));
+  void getObjects() {
+    if (objectsUpdateTimer == null) {
+      objectsUpdateTimer = Timer.periodic(new Duration(minutes: 1), (timer) {
+        log('obj update');
+        getObjectsUseCase.execute(_GetObjectsObserver(this));
+      });
+    }
+
+    getObjectsUseCase.execute(_GetObjectsObserver(this));
+  }
   void getAccounts() => getAccountsUseCase.execute(_GetAccountsObserver(this));
   void removeAccount(AccountDto account) => removeAccountUseCase.execute(
       _RemoveAccountObserver(this), RemoveAccountUseCaseParams(account));
-
-  void disableTimer() {
-    if (notificationTimer != null) {
-      notificationTimer!.cancel();
-    }
-  }
 }
 
 class _NotificationsUseCaseObserver implements Observer<List<SensorStateItem>> {
@@ -118,7 +140,10 @@ class _GetObjectsObserver implements Observer<List<ObjectItem>> {
 
   @override
   void onNext(List<ObjectItem>? response) {
-    _mainPresenter.startNotificationsListener(response);
+    if (_mainPresenter.notificationTimer == null) {
+      _mainPresenter.startNotificationsListener(response);
+    }
+
     _mainPresenter.getObjectsOnNext(response);
   }
 }

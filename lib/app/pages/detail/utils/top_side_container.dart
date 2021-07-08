@@ -1,8 +1,10 @@
 import 'package:fire_notifications_new/app/components/default_button.dart';
 import 'package:fire_notifications_new/app/components/labeled_text_field.dart';
 import 'package:fire_notifications_new/app/components/tab_button_widget.dart';
+import 'package:fire_notifications_new/app/globals.dart';
 import 'package:fire_notifications_new/app/pages/detail/detail_controller.dart';
 import 'package:fire_notifications_new/domain/entities/notification.dart';
+import 'package:fire_notifications_new/domain/events/stop_sound_event.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:flutter_clean_architecture/flutter_clean_architecture.dart';
 
@@ -72,6 +74,16 @@ class TopSideContainer extends StatelessWidget {
                                 ? Color(0xFFE13131)
                                 : Color(0xFFA3A3A0),
                             isDisabled: notification.type != 'error',
+                          ),
+                        ),
+                        Padding(padding: EdgeInsets.all(4.0)),
+                        Listener(
+                          onPointerUp: (void event) {
+                            eventBus.fire(StopSoundEvent());
+                          },
+                          child: DefaultButton(
+                            'Отключить звук',
+                            defaultColor: Color(0xFFA3A3A0),
                           ),
                         )
                       ],

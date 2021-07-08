@@ -3,8 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  dart_vlc
   desktop_window
-  flutter_audio_desktop
   window_size
 )
 
